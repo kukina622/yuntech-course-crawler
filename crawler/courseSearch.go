@@ -1,7 +1,6 @@
 package crawler
 
 import (
-	// "fmt"
 	"github.com/anaskhan96/soup"
 	"log"
 	"net/url"
@@ -13,12 +12,12 @@ const COURSE_URL string = "https://webapp.yuntech.edu.tw/webnewcas/course/queryc
 
 type course struct {
 	Name              string
-	MaxPeole          int
+	MaxPeople         int
 	NowNumberOfPeople int
 }
 
 type CourseSearchCrawler struct {
-	Course   course
+	Course course
 }
 
 func (crawler *CourseSearchCrawler) QueryCourse(serialNo string) {
@@ -66,7 +65,10 @@ func (crawler *CourseSearchCrawler) parseCoursePage(rawPage string) course {
 	// max people
 	r, _ := regexp.Compile("[0-9]+")
 	strMax := r.FindString(courseRow[10].Find("span").FullText())
-	_maxPeole, _ := strconv.Atoi(strMax)
-	course.MaxPeole = _maxPeole
+	_maxPeople, err := strconv.Atoi(strMax)
+	if err != nil {
+		_maxPeople = 9999999999
+	}
+	course.MaxPeople = _maxPeople
 	return course
 }
