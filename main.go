@@ -22,10 +22,11 @@ func main() {
 	jar, _ := cookiejar.New(nil)
 	job := cron.New()
 	job.AddFunc("*/1 * * * *", func() {
-		logrus.Info("start crawling")
 		result := task(jar)
 		if result {
 			job.Stop()
+			logrus.Info("job stop")
+			os.Exit(0)
 		}
 	})
 	job.Start()
@@ -39,6 +40,7 @@ func task(jar *cookiejar.Jar) bool {
 	if len(courseList) == 0 {
 		return true
 	}
+	logrus.Info("start crawling")
 	courseSearchCrawler := crawler.CourseSearchCrawler{}
 	yunTechSSOCrawler := crawler.YunTechSSOCrawler{
 		Username: username,
