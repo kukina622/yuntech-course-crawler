@@ -1,10 +1,10 @@
 package crawler
 
 import (
-	"github.com/anaskhan96/soup"
 	"io/ioutil"
-	"log"
 	"net/url"
+
+	"github.com/anaskhan96/soup"
 )
 
 type CourseRegisterCrawler struct {
@@ -24,7 +24,7 @@ func (crawler *CourseRegisterCrawler) AddCourse(SerialNo string) bool {
 func (crawler *CourseRegisterCrawler) search(SerialNo string) string {
 	fres, err := crawler.Client.Get(ADD_COURSE_URL)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	defer fres.Body.Close()
 	fbody, _ := ioutil.ReadAll(fres.Body)
@@ -48,7 +48,7 @@ func (crawler *CourseRegisterCrawler) search(SerialNo string) string {
 	payload.Add("ctl00$ContentPlaceHolder1$CourProgramDDL", "")
 	sres, err := crawler.Client.PostForm(ADD_COURSE_URL, payload)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	defer sres.Body.Close()
 	sbody, _ := ioutil.ReadAll(sres.Body)
@@ -78,7 +78,7 @@ func (crawler *CourseRegisterCrawler) register(body string) string {
 	payload.Add(checkBox, "on")
 	resp, err := crawler.Client.PostForm(ADD_COURSE_URL, payload)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	defer resp.Body.Close()
 	_body, _ := ioutil.ReadAll(resp.Body)
@@ -106,7 +106,7 @@ func (crawler *CourseRegisterCrawler) nextStep(body string) string {
 	payload.Add("ctl00$ContentPlaceHolder1$CourProgramDDL", "")
 	resp, err := crawler.Client.PostForm(ADD_COURSE_URL, payload)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	defer resp.Body.Close()
 	_body, _ := ioutil.ReadAll(resp.Body)
@@ -125,7 +125,7 @@ func (crawler *CourseRegisterCrawler) save(body string) bool {
 	payload.Add("ctl00$PlaceHolderMultipleLanguage$SelectLang", "")
 	resp, err := crawler.Client.PostForm(ADD_COURSE_URL, payload)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	defer resp.Body.Close()
 	return resp.StatusCode == 200

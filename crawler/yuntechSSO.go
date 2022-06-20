@@ -2,11 +2,11 @@ package crawler
 
 import (
 	// "fmt"
-	"github.com/anaskhan96/soup"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
+
+	"github.com/anaskhan96/soup"
 )
 
 const (
@@ -33,7 +33,7 @@ func (crawler *YunTechSSOCrawler) Login() bool {
 
 	resp, err := crawler.Client.PostForm(LOGIN_URL, payload)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	defer resp.Body.Close()
 	return crawler.checkLogin()
@@ -42,7 +42,7 @@ func (crawler *YunTechSSOCrawler) Login() bool {
 func (crawler *YunTechSSOCrawler) getLoginToken() string {
 	resp, err := crawler.Client.Get(LOGIN_URL)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
@@ -54,7 +54,7 @@ func (crawler *YunTechSSOCrawler) getLoginToken() string {
 func (crawler *YunTechSSOCrawler) checkLogin() bool {
 	resp, err := crawler.Client.Get(CHECK_LOGIN_URL)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	body, _ := ioutil.ReadAll(resp.Body)
 	return string(body) == "True"

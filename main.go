@@ -2,16 +2,18 @@ package main
 
 import (
 	"fmt"
-	"github.com/joho/godotenv"
-	"github.com/robfig/cron/v3"
-	"github.com/sirupsen/logrus"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/http/cookiejar"
 	"os"
 	"strings"
 	"yuntech-course-crawler/crawler"
 	"yuntech-course-crawler/utils"
+
+	"github.com/joho/godotenv"
+	"github.com/robfig/cron/v3"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -19,8 +21,9 @@ func main() {
 	if err != nil {
 		logrus.Fatal("Error loading .env file")
 	}
+	logger := cron.VerbosePrintfLogger(log.New(os.Stdout, "", log.LstdFlags))
 	jar, _ := cookiejar.New(nil)
-	job := cron.New()
+	job := cron.New(cron.WithChain(cron.Recover(logger)))
 	job.AddFunc("*/1 * * * *", func() {
 		result := task(jar)
 		if result {
@@ -56,11 +59,11 @@ func task(jar *cookiejar.Jar) bool {
 			logrus.Info(fmt.Sprintf("%s: has vacancies", serialNo))
 			loginResult := yunTechSSOCrawler.Login()
 			if !loginResult {
-				logrus.Fatal("warn username or password")
+				panic("warn username or password")
 			}
 			addResult := courseRegisterCrawler.AddCourse(serialNo)
 			if !addResult {
-				logrus.Fatal("error! please check your curriculum")
+				panic("error! please check your curriculum")
 			}
 			logrus.Info(fmt.Sprintf("%s: added successfully", serialNo))
 			addComplete(serialNo)

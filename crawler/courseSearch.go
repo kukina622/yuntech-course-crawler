@@ -1,11 +1,11 @@
 package crawler
 
 import (
-	"github.com/anaskhan96/soup"
-	"log"
 	"net/url"
 	"regexp"
 	"strconv"
+
+	"github.com/anaskhan96/soup"
 )
 
 const COURSE_URL string = "https://webapp.yuntech.edu.tw/webnewcas/course/querycour.aspx"
@@ -23,7 +23,7 @@ type CourseSearchCrawler struct {
 func (crawler *CourseSearchCrawler) QueryCourse(serialNo string) {
 	resp, err := soup.Get(COURSE_URL)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	doc := soup.HTMLParse(resp)
 	payload := url.Values{}
@@ -47,7 +47,7 @@ func (crawler *CourseSearchCrawler) QueryCourse(serialNo string) {
 	payload.Add("ctl00$MainContent$TextBoxWatermarkExtender2_ClientState", "")
 	resp, err = soup.PostForm(COURSE_URL, payload)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	course := crawler.parseCoursePage(resp)
 	crawler.Course = course
